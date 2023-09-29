@@ -61,64 +61,26 @@ async function displayPopularMovies() {
 }
 
 // Display Popular TV Show (GET)
-// async function displayPopularTvshow() {
-
-//   const { results } = await fetchApiData('tv/popular');
-
-//   results.forEach((tvShow) => {
-//     const div = document.createElement("div");
-//     div.classList.add("card");
-//     div.innerHTML = `
-//         <a href="tv-details.html?id=${tvShow.id}">
-//         ${tvShow.poster_path ? `
-//         <img
-//         src="https://image.tmdb.org/t/p/w500${tvShow.poster_path}"
-//         class="card-img-top"
-//         alt="Show Title"/>
-//         ` : `
-//         <imgsrc="../images/no-image.jpg"
-//         class="card-img-top"
-//         alt="Show Title"
-//         />
-//       `}
-//         </a>
-//         <div class="card-body">
-//           <h5 class="card-title">${tvShow.name}</h5>
-//           <p class="card-text">
-//             <small class="text-muted">Aired: ${tvShow.first_air_date}</small>
-//           </p>
-//         </div>
-//         `
-//     document.querySelector("#popular-shows").appendChild(div);
-//   })
-// }
-
-// Display Popular TV Show (GET)
 async function displayPopularTvshow() {
-  try {
-    const { results } = await fetchApiData('tv/popular');
 
-    // Log the TV show data to the console for debugging
-    console.log(results);
+  const { results } = await fetchApiData('tv/popular');
 
-    results.forEach((tvShow) => {
-      const div = document.createElement("div");
-      div.classList.add("card");
-      div.innerHTML = `
+  results.forEach((tvShow) => {
+    const div = document.createElement("div");
+    div.classList.add("card");
+    div.innerHTML = `
         <a href="tv-details.html?id=${tvShow.id}">
-          ${tvShow.poster_path ? `
-            <img
-              src="https://image.tmdb.org/t/p/w500${tvShow.poster_path}"
-              class="card-img-top"
-              alt="Show Title"
-            />
-          ` : `
-            <img
-              src="../images/no-image.jpg"
-              class="card-img-top"
-              alt="Show Title"
-            />
-          `}
+        ${tvShow.poster_path ? `
+        <img
+        src="https://image.tmdb.org/t/p/w500${tvShow.poster_path}"
+        class="card-img-top"
+        alt="Show Title"/>
+        ` : `
+        <imgsrc="../images/no-image.jpg"
+        class="card-img-top"
+        alt="Show Title"
+        />
+      `}
         </a>
         <div class="card-body">
           <h5 class="card-title">${tvShow.name}</h5>
@@ -126,16 +88,10 @@ async function displayPopularTvshow() {
             <small class="text-muted">Aired: ${tvShow.first_air_date}</small>
           </p>
         </div>
-      `;
-
-      document.querySelector("#popular-shows").appendChild(div);
-    });
-  } catch (error) {
-    console.error("Error fetching TV show data:", error);
-  }
+        `
+    document.querySelector("#popular-shows").appendChild(div);
+  })
 }
-
-
 
 // Display Movie Details (GET)
 async function displayMovieDetails() {
@@ -398,13 +354,13 @@ async function fetchApiData(endpoint) {
 
   const response = await fetch(`${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US`);
 
-  console.log(await fetch(`${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US`));
+  // console.log(await fetch(`${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US`));
 
   const data = await response.json();
 
   hideSpinner();
 
-  console.log(data);
+  // console.log(data);
   return data;
 }
 
@@ -422,7 +378,7 @@ async function fetchSearchApiData() {
 
   hideSpinner();
 
-  console.log(data);
+  // console.log(data);
   return data;
 }
 
