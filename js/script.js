@@ -354,13 +354,10 @@ async function fetchApiData(endpoint) {
 
   const response = await fetch(`${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US`);
 
-  // console.log(await fetch(`${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US`));
-
   const data = await response.json();
 
   hideSpinner();
 
-  // console.log(data);
   return data;
 }
 
@@ -378,7 +375,6 @@ async function fetchSearchApiData() {
 
   hideSpinner();
 
-  // console.log(data);
   return data;
 }
 
