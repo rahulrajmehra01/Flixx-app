@@ -8,8 +8,8 @@ const global = {
 
   },
   apiUrl: {
-    API_KEY: process.env.API_KEY,
-    API_URL: process.env.API_URL,
+    API_KEY: "3b3f391c070b491aa50399a2a2811dda",
+    API_URL: "https://api.themoviedb.org/3/",
   }
 }
 
