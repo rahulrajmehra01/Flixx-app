@@ -5,7 +5,7 @@ const global = {
     type: "",
     page: 1,
     totalPages: 1,
-
+    totalResults: 0,
   },
   apiUrl: {
     API_KEY: "3b3f391c070b491aa50399a2a2811dda",
@@ -211,10 +211,11 @@ async function displayTvShowDetails() {
       </div>
   `
   document.querySelector("#show-details").appendChild(div);
+
 }
 
 // Search Movies and Tvshows (GET)
-async function displaySearchData() {
+async function getSearchData() {
 
   const string = window.location.search;
   const URLparams = new URLSearchParams(string);
@@ -222,35 +223,100 @@ async function displaySearchData() {
   global.search.term = URLparams.get('search-term');
 
   if (global.search.term !== "" && global.search.term !== null) {
-    const { results } = await fetchSearchApiData();
 
-    results.forEach((item) => {
-      const div = document.createElement("div");
-      div.classList.add("card");
+    const { results, total_pages, page, total_results } = await fetchSearchApiData();
 
-      const posterPath = item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : "../images/no-image.jpg";
-      const title = global.search.type === "movie" ? item.title : item.name;
-      const releaseDate = global.search.type === "movie" ? item.release_date : item.first_air_date;
+    global.search.page = page;
+    global.search.totalPages = total_pages;
+    global.search.totalResults = total_results;
 
-      div.innerHTML = `
-       <a href="${global.search.type === 'movie' ? 'movie-details.html' : 'tv-details.html'}?id=${item.id}">
-          <img src="${posterPath}" class="card-img-top" alt="" />
-        </a>
-        <div class="card-body">
-          <h5 class="card-title">${title}</h5>
-          <p class="card-text">
-            <small class="text-muted">Release: ${releaseDate}</small>
-          </p>
-        </div>
-      `;
+    if (results.length === 0) {
+      showAlert("No results found");
+      return;
+    }
 
-      document.querySelector("#search-results").appendChild(div);
-    });
+    displaySearchResults(results);
+
+    document.querySelector("#search-term").value = "";
   } else {
     showAlert("please enter a search term");
   }
 }
 
+
+function displaySearchResults(results) {
+
+  document.querySelector("#search-results").innerHTML = '';
+  document.querySelector("#search-pagination").innerHTML = '';
+  document.querySelector("#search-results-heading").innerHTML = '';
+
+
+  results.forEach((item) => {
+    const div = document.createElement("div");
+    div.classList.add("card");
+
+    const posterPath = item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : "../images/no-image.jpg";
+    const title = global.search.type === "movie" ? item.title : item.name;
+    const releaseDate = global.search.type === "movie" ? item.release_date : item.first_air_date;
+
+    div.innerHTML = `
+     <a href="${global.search.type === 'movie' ? 'movie-details.html' : 'tv-details.html'}?id=${item.id}">
+        <img src="${posterPath}" class="card-img-top" alt="" />
+      </a>
+      <div class="card-body">
+        <h5 class="card-title">${title}</h5>
+        <p class="card-text">
+          <small class="text-muted">Release: ${releaseDate}</small>
+        </p>
+      </div>
+    `;
+
+    document.querySelector("#search-results-heading").innerHTML = `
+       <h2>${results.length} of ${global.search.totalResults}
+       Results for ${global.search.term}</h2>
+    `;
+    document.querySelector("#search-results").appendChild(div);
+  });
+
+  displayPagination();
+}
+
+function displayPagination() {
+
+  const div = document.createElement("div");
+  div.classList.add("search-pagination");
+  div.innerHTML = `
+  <button class="btn btn-primary" id="prev">Prev</button>
+  <button class="btn btn-primary" id="next">Next</button>
+  <div class="page-counter">Page ${global.search.page} of ${global.search.totalPages}</div>
+  `;
+
+  document.querySelector("#search-pagination").appendChild(div);
+
+  // Disable prev button if on first page
+  if (global.search.page === 1) {
+    document.querySelector("#prev").disabled = true;
+  }
+
+  // DistotalPagesfeable next button if on last page
+  if (global.search.page === global.search.totalPages) {
+    document.querySelector("#next").disabled = true;
+  }
+
+  // Next page
+
+  document.querySelector("#next").addEventListener("click", async () => {
+    global.search.page++;
+    const { results, total_pages } = await fetchSearchApiData();
+    displaySearchResults(results);
+  })
+
+  document.querySelector("#prev").addEventListener("click", async () => {
+    global.search.page--;
+    const { results, total_pages } = await fetchSearchApiData();
+    displaySearchResults(results);
+  })
+}
 
 // Spinner or loading icon
 function showSpinner() {
@@ -266,7 +332,7 @@ function AddCommatoNum(num) {
   return num.toLocaleString();
 }
 
-function showAlert(message, className) {
+function showAlert(message, className = "error") {
   const alertEl = document.createElement("div");
   alertEl.classList.add("alert", className);
   alertEl.appendChild(document.createTextNode(message));
@@ -369,7 +435,7 @@ async function fetchSearchApiData() {
 
   showSpinner();
 
-  const response = await fetch(`${API_URL}search/${global.search.type}?api_key=${API_KEY}&language=en-US&query=${global.search.term}`);
+  const response = await fetch(`${API_URL}search/${global.search.type}?api_key=${API_KEY}&language=en-US&query=${global.search.term}&page=${global.search.page}`);
 
   const data = await response.json();
 
@@ -391,7 +457,7 @@ function init() {
       displayMovieDetails();
       break;
     case "/search.html":
-      displaySearchData();
+      getSearchData();
       break;
     case "/shows.html":
       displayPopularTvshow();

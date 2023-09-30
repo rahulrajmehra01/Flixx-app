@@ -94,7 +94,7 @@ ul {
 
 .main-header .logo {
   color: #fff;
-  font-size: 20px;
+  font-size: 40px;
   font-weight: 700;
   text-transform: uppercase;
 }
@@ -337,23 +337,26 @@ section h2 {
   margin-top: 20px;
 }
 
+#search-pagination {
+  padding: 50px 0 0 0;
+}
+
 .page-counter {
   margin-top: 10px;
 }
 
 /* Alert */
 .alert {
-  background: red;
   padding: 10px 20px;
   margin-bottom: 20px;
   border-radius: 5px;
 }
 
-.alert-success {
+.success {
   background: green;
 }
 
-.alert-error {
+.error {
   background: red;
 }
 
@@ -372,7 +375,7 @@ section h2 {
   }
 
   .main-header .logo {
-    font-size: 18px;
+    font-size: 25px;
   }
 
   .main-header ul li {
