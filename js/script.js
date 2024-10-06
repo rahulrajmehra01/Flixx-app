@@ -413,8 +413,8 @@ function initSwiper() {
 
 // Endpoint to Retrive all data
 async function fetchApiData(endpoint) {
-  const API_URL = global.apiUrl.API_URL;
-  const API_KEY = global.apiUrl.API_KEY;
+  const API_URL = process.env.REACT_APP_API_URL; // Make sure it starts with REACT_APP_
+  const API_KEY = process.env.REACT_APP_API_KEY; // Make sure it starts with REACT_APP_
 
   showSpinner();
 
